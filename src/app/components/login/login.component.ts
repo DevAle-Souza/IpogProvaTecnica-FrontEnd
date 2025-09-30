@@ -85,6 +85,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       this.authService.register(this.registerForm.value).subscribe({
         next: (response) => {
+          this.loading = false;
           this.toastService.success('Sucesso', response.message || 'Conta criada com sucesso!');
           setTimeout(() => {
             this.registerForm.reset();
@@ -92,8 +93,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           }, 1500);
         },
         error: (error) => {
-          this.toastService.error('Erro', error.error?.message || 'Erro ao criar conta');
           this.loading = false;
+          this.toastService.error('Erro', error.error?.message || 'Erro ao criar conta');
         }
       });
     } else {

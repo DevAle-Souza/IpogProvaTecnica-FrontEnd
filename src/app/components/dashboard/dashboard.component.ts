@@ -18,6 +18,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { PaginatorModule } from 'primeng/paginator';
 import { FormsModule } from '@angular/forms';
 import { TaskFormComponent } from '../task-form/task-form.component';
+import { CustomDropdownComponent, DropdownOption } from '../custom-dropdown/custom-dropdown';
+import { CustomPaginationComponent, PaginationEvent } from '../custom-pagination/custom-pagination';
 
 @Component({
   selector: 'app-dashboard',
@@ -36,7 +38,9 @@ import { TaskFormComponent } from '../task-form/task-form.component';
     ConfirmDialogModule,
     TooltipModule,
     PaginatorModule,
-    TaskFormComponent
+    TaskFormComponent,
+    CustomDropdownComponent,
+    CustomPaginationComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
@@ -62,14 +66,14 @@ export class DashboardComponent implements OnInit {
   sortField = 'name';
   sortOrder = 1;
 
-  priorities = [
+  priorities: DropdownOption[] = [
     { label: 'Todas', value: null },
     { label: 'Baixa', value: Priority.BAIXA },
     { label: 'Média', value: Priority.MEDIA },
     { label: 'Alta', value: Priority.ALTA }
   ];
 
-  situations = [
+  situations: DropdownOption[] = [
     { label: 'Todas', value: null },
     { label: 'Aberta', value: Situation.ABERTA },
     { label: 'Pendente', value: Situation.PENDENTE },
@@ -140,6 +144,12 @@ export class DashboardComponent implements OnInit {
       this.sortOrder = event.sortOrder === 1 ? 1 : -1;
     }
 
+    this.loadTasks();
+  }
+
+  onPageChange(event: PaginationEvent): void {
+    this.currentPage = event.page;
+    this.pageSize = event.rows;
     this.loadTasks();
   }
 

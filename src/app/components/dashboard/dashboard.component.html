@@ -113,33 +113,27 @@
 
         <div class="col-12 md:col-4">
           <div class="field">
-            <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Prioridade</label>
-            <p-select
+            <app-custom-dropdown
               id="priority"
+              label="Prioridade"
+              [options]="priorities"
               [(ngModel)]="filter.priority"
               (onChange)="onFilterChange()"
-              [options]="priorities"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Selecione a prioridade"
-              class="w-full">
-            </p-select>
+              placeholder="Selecione a prioridade">
+            </app-custom-dropdown>
           </div>
         </div>
 
         <div class="col-12 md:col-4">
           <div class="field">
-            <label for="situation" class="block text-sm font-medium text-gray-700 mb-1">Situação</label>
-            <p-select
+            <app-custom-dropdown
               id="situation"
+              label="Situação"
+              [options]="situations"
               [(ngModel)]="filter.situation"
               (onChange)="onFilterChange()"
-              [options]="situations"
-              optionLabel="label"
-              optionValue="value"
-              placeholder="Selecione a situação"
-              class="w-full">
-            </p-select>
+              placeholder="Selecione a situação">
+            </app-custom-dropdown>
           </div>
         </div>
       </div>
@@ -157,14 +151,11 @@
     <p-table
       [value]="tasks"
       [loading]="loading"
-      [paginator]="true"
+      [paginator]="false"
       [rows]="pageSize"
       [totalRecords]="totalElements"
       [lazy]="true"
       (onLazyLoad)="onLazyLoad($event)"
-      [showCurrentPageReport]="true"
-      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} tarefas"
-      [rowsPerPageOptions]="[5, 10, 20]"
       [first]="currentPage * pageSize">
 
       <ng-template pTemplate="header">
@@ -179,45 +170,48 @@
       </ng-template>
 
       <ng-template pTemplate="body" let-task>
-        <tr>
-          <td>
-            <div class="flex items-center gap-2">
-              <i class="pi pi-circle-fill text-xs"
+        <tr class="table-row">
+          <td class="task-name-cell">
+            <div class="task-name-content">
+              <i class="priority-indicator"
                  [ngClass]="{
-                   'text-green-600': (task.priority || task.prioridade) === 'BAIXA',
-                   'text-orange-600': (task.priority || task.prioridade) === 'MEDIA',
-                   'text-red-600': (task.priority || task.prioridade) === 'ALTA'
+                   'priority-low': (task.priority || task.prioridade) === 'BAIXA',
+                   'priority-medium': (task.priority || task.prioridade) === 'MEDIA',
+                   'priority-high': (task.priority || task.prioridade) === 'ALTA'
                  }"></i>
-              <span class="font-medium">{{ task.name || task.nome }}</span>
+              <span class="task-name">{{ task.name || task.nome }}</span>
             </div>
           </td>
-          <td>
-            <span class="text-gray-600">{{ (task.description || task.descricao) || '-' }}</span>
+          <td class="task-description-cell">
+            <span class="task-description">{{ (task.description || task.descricao) || '-' }}</span>
           </td>
-          <td>
+          <td class="task-priority-cell">
             <p-tag
               [value]="task.priority || task.prioridade"
-              [severity]="getPrioritySeverity(task.priority || task.prioridade)">
+              [severity]="getPrioritySeverity(task.priority || task.prioridade)"
+              styleClass="priority-tag">
             </p-tag>
           </td>
-          <td>
+          <td class="task-situation-cell">
             <p-tag
               [value]="task.situation || task.situacao"
-              [severity]="getSituationSeverity(task.situation || task.situacao)">
+              [severity]="getSituationSeverity(task.situation || task.situacao)"
+              styleClass="situation-tag">
             </p-tag>
           </td>
-          <td>
-            <span class="text-gray-700">{{ (task.expectedCompletionDate || task.dataPrevistaConclusao) | date:'dd/MM/yyyy' }}</span>
+          <td class="task-date-cell">
+            <span class="task-date">{{ (task.expectedCompletionDate || task.dataPrevistaConclusao) | date:'dd/MM/yyyy' }}</span>
           </td>
-          <td>
-            <div class="flex gap-1">
+          <td class="task-actions-cell">
+            <div class="action-buttons">
               <p-button
                 icon="pi pi-check"
                 size="small"
                 severity="success"
                 [disabled]="(task.situation || task.situacao) === 'CONCLUIDA'"
                 (onClick)="markAsComplete(task)"
-                pTooltip="Marcar como concluída">
+                pTooltip="Marcar como concluída"
+                styleClass="action-btn action-btn-success">
               </p-button>
 
               <p-button
@@ -226,7 +220,8 @@
                 severity="warn"
                 [disabled]="(task.situation || task.situacao) === 'PENDENTE'"
                 (onClick)="markAsPending(task)"
-                pTooltip="Marcar como pendente">
+                pTooltip="Marcar como pendente"
+                styleClass="action-btn action-btn-warning">
               </p-button>
 
               <p-button
@@ -234,7 +229,8 @@
                 size="small"
                 severity="info"
                 (onClick)="showTaskFormModal(task)"
-                pTooltip="Editar">
+                pTooltip="Editar"
+                styleClass="action-btn action-btn-info">
               </p-button>
 
               <p-button
@@ -242,7 +238,8 @@
                 size="small"
                 severity="danger"
                 (onClick)="deleteTask(task)"
-                pTooltip="Excluir">
+                pTooltip="Excluir"
+                styleClass="action-btn action-btn-danger">
               </p-button>
             </div>
           </td>
@@ -260,6 +257,20 @@
         </tr>
       </ng-template>
     </p-table>
+
+    <!-- Paginação Customizada -->
+    <app-custom-pagination
+      [totalRecords]="totalElements"
+      [rows]="pageSize"
+      [first]="currentPage * pageSize"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} tarefas"
+      [showRowsPerPageDropdown]="true"
+      [showPageLinks]="true"
+      [maxPageLinks]="5"
+      (onPageChange)="onPageChange($event)">
+    </app-custom-pagination>
     </p-card>
 
     <!-- Modal de Formulário -->

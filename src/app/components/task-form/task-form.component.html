@@ -39,47 +39,38 @@
         </div>
 
         <div class="field">
-          <label for="priority" class="field-label">Prioridade *</label>
-          <p-select
+          <app-custom-dropdown
             id="priority"
-            formControlName="priority"
+            label="Prioridade *"
             [options]="priorities"
-            optionLabel="label"
-            optionValue="value"
+            formControlName="priority"
             placeholder="Selecione a prioridade"
-            class="form-select"
-            [class.ng-invalid]="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched">
-          </p-select>
+            [required]="true">
+          </app-custom-dropdown>
           <small *ngIf="getFieldError('priority')" class="error-message">{{ getFieldError('priority') }}</small>
         </div>
 
         <div class="field">
-          <label for="situation" class="field-label">Situação *</label>
-          <p-select
+          <app-custom-dropdown
             id="situation"
-            formControlName="situation"
+            label="Situação *"
             [options]="situations"
-            optionLabel="label"
-            optionValue="value"
+            formControlName="situation"
             placeholder="Selecione a situação"
-            class="form-select"
-            [class.ng-invalid]="taskForm.get('situation')?.invalid && taskForm.get('situation')?.touched">
-          </p-select>
+            [required]="true">
+          </app-custom-dropdown>
           <small *ngIf="getFieldError('situation')" class="error-message">{{ getFieldError('situation') }}</small>
         </div>
 
         <div class="field">
-          <label for="expectedCompletionDate" class="field-label">Data Prevista de Conclusão *</label>
-          <p-datepicker
+          <app-custom-datepicker
             id="expectedCompletionDate"
+            label="Data Prevista de Conclusão *"
             formControlName="expectedCompletionDate"
             placeholder="Selecione a data"
-            [showIcon]="true"
             [minDate]="minDate"
-            dateFormat="dd/mm/yy"
-            class="form-datepicker"
-            [class.ng-invalid]="taskForm.get('expectedCompletionDate')?.invalid && taskForm.get('expectedCompletionDate')?.touched">
-          </p-datepicker>
+            [required]="true">
+          </app-custom-datepicker>
           <small *ngIf="getFieldError('expectedCompletionDate')" class="error-message">{{ getFieldError('expectedCompletionDate') }}</small>
         </div>
       </div>

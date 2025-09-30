@@ -80,35 +80,101 @@ html, body {
   background: white;
 }
 
-/* Fix for PrimeNG dropdown panels */
-.p-dropdown-panel {
+/* Fix for PrimeNG dropdown panels - FORÇA MÁXIMA */
+.p-dropdown-panel,
+.p-dropdown-panel *,
+.p-dropdown-panel .p-dropdown-items,
+.p-dropdown-panel .p-dropdown-items *,
+.p-dropdown-panel .p-dropdown-item,
+.p-dropdown-panel .p-dropdown-item *,
+.p-dropdown-panel .p-dropdown-list,
+.p-dropdown-panel .p-dropdown-list *,
+.p-dropdown-panel .p-dropdown-list-item,
+.p-dropdown-panel .p-dropdown-list-item * {
   background: white !important;
+  background-color: white !important;
+  background-image: none !important;
+}
+
+/* Força ainda mais específica */
+body .p-dropdown-panel,
+body .p-dropdown-panel *,
+body .p-dropdown-panel .p-dropdown-items,
+body .p-dropdown-panel .p-dropdown-items *,
+body .p-dropdown-panel .p-dropdown-item,
+body .p-dropdown-panel .p-dropdown-item * {
+  background: white !important;
+  background-color: white !important;
+  background-image: none !important;
+}
+
+/* Força máxima com seletores específicos do PrimeNG */
+.p-dropdown-panel .p-dropdown-list .p-dropdown-item,
+.p-dropdown-panel .p-dropdown-list .p-dropdown-item:hover,
+.p-dropdown-panel .p-dropdown-list .p-dropdown-item:focus,
+.p-dropdown-panel .p-dropdown-list .p-dropdown-item.p-highlight,
+.p-dropdown-panel .p-dropdown-list .p-dropdown-item.p-highlight:hover {
+  background: white !important;
+  background-color: white !important;
+  background-image: none !important;
+}
+
+.p-dropdown-panel .p-dropdown-list .p-dropdown-item:hover {
+  background: #f3f4f6 !important;
+  background-color: #f3f4f6 !important;
+}
+
+.p-dropdown-panel .p-dropdown-list .p-dropdown-item.p-highlight {
+  background: #667eea !important;
+  background-color: #667eea !important;
+  color: white !important;
+}
+
+.p-dropdown-panel {
   border: 2px solid #e5e7eb !important;
   border-radius: 8px !important;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
   z-index: 9999 !important;
+  overflow: hidden !important;
 }
 
 .p-dropdown-panel .p-dropdown-items {
-  background: white !important;
-  padding: 0.5rem 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
 }
 
 .p-dropdown-panel .p-dropdown-item {
-  background: white !important;
   color: #374151 !important;
   padding: 0.75rem 1rem !important;
   border: none !important;
+  border-bottom: 1px solid #f3f4f6 !important;
   transition: all 0.2s !important;
+  margin: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  text-align: left !important;
+}
+
+.p-dropdown-panel .p-dropdown-item:last-child {
+  border-bottom: none !important;
 }
 
 .p-dropdown-panel .p-dropdown-item:hover {
   background: #f3f4f6 !important;
+  background-color: #f3f4f6 !important;
   color: #1f2937 !important;
 }
 
 .p-dropdown-panel .p-dropdown-item.p-highlight {
   background: #667eea !important;
+  background-color: #667eea !important;
+  color: white !important;
+}
+
+.p-dropdown-panel .p-dropdown-item.p-highlight:hover {
+  background: #5a67d8 !important;
+  background-color: #5a67d8 !important;
   color: white !important;
 }
 
@@ -118,8 +184,9 @@ html, body {
   border: 2px solid #e5e7eb !important;
   border-radius: 12px !important;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
-  z-index: 9999 !important;
+  z-index: 99999 !important;
   overflow: visible !important;
+  position: fixed !important;
 }
 
 .p-datepicker-panel .p-datepicker-calendar {
@@ -133,7 +200,7 @@ html, body {
   color: #6b7280 !important;
   position: sticky !important;
   top: 0 !important;
-  z-index: 10001 !important;
+  z-index: 100000 !important;
 }
 
 .p-datepicker-panel .p-datepicker-calendar td > span {

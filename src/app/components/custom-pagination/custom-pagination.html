@@ -1,0 +1,71 @@
+<div class="custom-pagination" *ngIf="totalRecords > 0">
+  <!-- Informações da página atual -->
+  <div class="pagination-info" *ngIf="showCurrentPageReport">
+    <span class="page-report">{{ currentPageReport }}</span>
+  </div>
+
+  <!-- Controles de paginação -->
+  <div class="pagination-controls">
+    <!-- Botões de navegação -->
+    <div class="navigation-buttons" *ngIf="showPageLinks">
+      <button
+        type="button"
+        class="nav-button first"
+        [disabled]="isFirstPage()"
+        (click)="goToFirstPage()"
+        title="Primeira página">
+        <i class="pi pi-angle-double-left"></i>
+      </button>
+
+      <button
+        type="button"
+        class="nav-button previous"
+        [disabled]="isFirstPage()"
+        (click)="goToPreviousPage()"
+        title="Página anterior">
+        <i class="pi pi-angle-left"></i>
+      </button>
+
+      <!-- Links das páginas -->
+      <div class="page-links">
+        <button
+          *ngFor="let page of pageLinks; trackBy: trackByPage"
+          type="button"
+          class="page-button"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)">
+          {{ page + 1 }}
+        </button>
+      </div>
+
+      <button
+        type="button"
+        class="nav-button next"
+        [disabled]="isLastPage()"
+        (click)="goToNextPage()"
+        title="Próxima página">
+        <i class="pi pi-angle-right"></i>
+      </button>
+
+      <button
+        type="button"
+        class="nav-button last"
+        [disabled]="isLastPage()"
+        (click)="goToLastPage()"
+        title="Última página">
+        <i class="pi pi-angle-double-right"></i>
+      </button>
+    </div>
+
+    <!-- Dropdown de itens por página -->
+    <div class="rows-per-page" *ngIf="showRowsPerPageDropdown">
+      <span class="rows-label">Itens por página:</span>
+      <app-custom-dropdown
+        [options]="rowsPerPageOptionsDropdown"
+        [(ngModel)]="rows"
+        (onChange)="onRowsPerPageChange($event)"
+        [style]="{width: '80px'}">
+      </app-custom-dropdown>
+    </div>
+  </div>
+</div>

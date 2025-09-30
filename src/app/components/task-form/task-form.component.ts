@@ -10,6 +10,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
 import { DatePickerModule } from 'primeng/datepicker';
+import { CustomDropdownComponent, DropdownOption } from '../custom-dropdown/custom-dropdown';
+import { CustomDatepickerComponent } from '../custom-datepicker/custom-datepicker';
 
 @Component({
   selector: 'app-task-form',
@@ -22,7 +24,9 @@ import { DatePickerModule } from 'primeng/datepicker';
     InputTextModule,
     TextareaModule,
     SelectModule,
-    DatePickerModule
+    DatePickerModule,
+    CustomDropdownComponent,
+    CustomDatepickerComponent
   ],
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.css']
@@ -38,13 +42,13 @@ export class TaskFormComponent implements OnInit, OnChanges {
   isEditMode = false;
   minDate = new Date();
 
-  priorities = [
+  priorities: DropdownOption[] = [
     { label: 'Baixa', value: Priority.BAIXA },
     { label: 'Média', value: Priority.MEDIA },
     { label: 'Alta', value: Priority.ALTA }
   ];
 
-  situations = [
+  situations: DropdownOption[] = [
     { label: 'Aberta', value: Situation.ABERTA },
     { label: 'Pendente', value: Situation.PENDENTE },
     { label: 'Concluída', value: Situation.CONCLUIDA }

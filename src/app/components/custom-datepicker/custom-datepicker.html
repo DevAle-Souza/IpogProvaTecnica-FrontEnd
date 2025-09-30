@@ -1,0 +1,46 @@
+<div class="custom-datepicker" [class.disabled]="disabled">
+  <label *ngIf="label" [for]="id" class="datepicker-label">
+    {{ label }}
+    <span *ngIf="required" class="required">*</span>
+  </label>
+
+  <div class="datepicker-container" [class.open]="isOpen">
+    <div
+      class="datepicker-trigger"
+      [id]="id"
+      (click)="toggleCalendar()"
+      [class.disabled]="disabled">
+      <span class="datepicker-value" [class.placeholder]="!selectedDate">
+        {{ displayValue || placeholder }}
+      </span>
+      <i class="datepicker-icon" [class.rotated]="isOpen">📅</i>
+    </div>
+
+    <div class="datepicker-panel" *ngIf="isOpen">
+      <div class="datepicker-header">
+        <button type="button" class="nav-button" (click)="previousMonth()">‹</button>
+        <span class="month-year">{{ getMonthName() }} {{ currentYear }}</span>
+        <button type="button" class="nav-button" (click)="nextMonth()">›</button>
+      </div>
+
+      <div class="datepicker-calendar">
+        <div class="weekdays">
+          <div *ngFor="let day of getWeekDays()" class="weekday">{{ day }}</div>
+        </div>
+
+        <div class="days">
+          <div
+            *ngFor="let date of calendarDays; trackBy: trackByDate"
+            class="day"
+            [class.other-month]="date.getMonth() !== currentMonth"
+            [class.today]="isToday(date)"
+            [class.selected]="isSelectedDate(date)"
+            [class.disabled]="isDateDisabled(date)"
+            (click)="selectDate(date)">
+            {{ date.getDate() }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

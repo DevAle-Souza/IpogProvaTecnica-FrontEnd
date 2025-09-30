@@ -3,6 +3,7 @@
   border-radius: 12px !important;
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  z-index: 1000 !important;
 }
 
 :host ::ng-deep .custom-dialog .p-dialog-header {
@@ -228,7 +229,7 @@
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
   margin-top: 8px !important;
   overflow: visible !important;
-  z-index: 9999 !important;
+  z-index: 99999 !important;
   position: fixed !important;
 }
 
@@ -238,7 +239,7 @@
   padding: 1rem !important;
   position: sticky !important;
   top: 0 !important;
-  z-index: 10000 !important;
+  z-index: 100000 !important;
 }
 
 :host ::ng-deep .p-datepicker-panel .p-datepicker-title {

@@ -1,0 +1,31 @@
+<div class="custom-dropdown" [class.disabled]="disabled">
+  <label *ngIf="label" [for]="id" class="dropdown-label">
+    {{ label }}
+    <span *ngIf="required" class="required">*</span>
+  </label>
+
+  <div class="dropdown-container" [class.open]="isOpen">
+    <div
+      class="dropdown-trigger"
+      [id]="id"
+      (click)="toggleDropdown()"
+      [class.disabled]="disabled">
+      <span class="dropdown-value" [class.placeholder]="!selectedOption">
+        {{ displayValue }}
+      </span>
+      <i class="dropdown-icon" [class.rotated]="isOpen">▼</i>
+    </div>
+
+    <div class="dropdown-panel" *ngIf="isOpen">
+      <div class="dropdown-options">
+        <div
+          *ngFor="let option of options; trackBy: trackByValue"
+          class="dropdown-option"
+          [class.selected]="option.value === value"
+          (click)="selectOption(option)">
+          {{ option.label }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

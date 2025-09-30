@@ -1,0 +1,107 @@
+<p-dialog
+  [visible]="visible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{width: '520px', maxHeight: '90vh'}"
+  [styleClass]="'custom-dialog'"
+  (onHide)="closeDialog()"
+  [header]="isEditMode ? 'Editar Tarefa' : 'Nova Tarefa'">
+
+  <div class="dialog-content">
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="field">
+          <label for="name" class="field-label">Nome *</label>
+          <input
+            pInputText
+            id="name"
+            formControlName="name"
+            placeholder="Digite o nome da tarefa"
+            class="form-input"
+            [class.ng-invalid]="taskForm.get('name')?.invalid && taskForm.get('name')?.touched">
+          <small *ngIf="getFieldError('name')" class="error-message">{{ getFieldError('name') }}</small>
+        </div>
+
+        <div class="field">
+          <label for="description" class="field-label">Descrição</label>
+          <textarea
+            pInputTextarea
+            id="description"
+            formControlName="description"
+            placeholder="Digite a descrição da tarefa (opcional)"
+            rows="3"
+            class="form-textarea w-full"
+            [class.ng-invalid]="taskForm.get('description')?.invalid && taskForm.get('description')?.touched">
+          </textarea>
+          <small *ngIf="getFieldError('description')" class="error-message">{{ getFieldError('description') }}</small>
+        </div>
+
+        <div class="field">
+          <label for="priority" class="field-label">Prioridade *</label>
+          <p-select
+            id="priority"
+            formControlName="priority"
+            [options]="priorities"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecione a prioridade"
+            class="form-select"
+            [class.ng-invalid]="taskForm.get('priority')?.invalid && taskForm.get('priority')?.touched">
+          </p-select>
+          <small *ngIf="getFieldError('priority')" class="error-message">{{ getFieldError('priority') }}</small>
+        </div>
+
+        <div class="field">
+          <label for="situation" class="field-label">Situação *</label>
+          <p-select
+            id="situation"
+            formControlName="situation"
+            [options]="situations"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecione a situação"
+            class="form-select"
+            [class.ng-invalid]="taskForm.get('situation')?.invalid && taskForm.get('situation')?.touched">
+          </p-select>
+          <small *ngIf="getFieldError('situation')" class="error-message">{{ getFieldError('situation') }}</small>
+        </div>
+
+        <div class="field">
+          <label for="expectedCompletionDate" class="field-label">Data Prevista de Conclusão *</label>
+          <p-datepicker
+            id="expectedCompletionDate"
+            formControlName="expectedCompletionDate"
+            placeholder="Selecione a data"
+            [showIcon]="true"
+            [minDate]="minDate"
+            dateFormat="dd/mm/yy"
+            class="form-datepicker"
+            [class.ng-invalid]="taskForm.get('expectedCompletionDate')?.invalid && taskForm.get('expectedCompletionDate')?.touched">
+          </p-datepicker>
+          <small *ngIf="getFieldError('expectedCompletionDate')" class="error-message">{{ getFieldError('expectedCompletionDate') }}</small>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="dialog-footer">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        styleClass="p-button-outlined"
+        (onClick)="closeDialog()"
+        [disabled]="loading">
+      </p-button>
+      <p-button
+        [label]="isEditMode ? 'Atualizar' : 'Criar'"
+        [icon]="isEditMode ? 'pi pi-check' : 'pi pi-plus'"
+        (onClick)="onSubmit()"
+        [loading]="loading"
+        [disabled]="taskForm.invalid">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>

@@ -1,59 +1,218 @@
-# TodolistFrontend
+# TodoList Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.1.
+Sistema de gerenciamento de tarefas desenvolvido em Angular com interface moderna e responsiva.
 
-## Development server
+## 🚀 Como rodar o projeto
 
-To start a local development server, run:
+### Pré-requisitos
+- Node.js (versão 18 ou superior)
+- npm ou pnpm
+- Angular CLI
 
+### Instalação
+
+1. Clone o repositório:
 ```bash
+git clone <url-do-repositorio>
+cd todolist-frontend
+```
+
+2. Instale as dependências:
+```bash
+# Usando npm
+npm install
+
+# Ou usando pnpm (recomendado)
+pnpm install
+```
+
+3. Execute o projeto:
+```bash
+# Usando npm
+npm start
+
+# Ou usando pnpm
+pnpm start
+
+# Ou usando Angular CLI
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+4. Acesse a aplicação:
+```
+http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
+### Configuração do Backend
+Certifique-se de que o backend está rodando na porta 8080:
+```
+http://localhost:8080
 ```
 
-## Building
+## 🛠️ Tecnologias utilizadas
 
-To build the project run:
+### Frontend
+- **Angular 20.3.1** - Framework principal
+- **TypeScript** - Linguagem de programação
+- **PrimeNG** - Biblioteca de componentes UI
+- **PrimeIcons** - Ícones
+- **Angular Router** - Roteamento
+- **Reactive Forms** - Formulários reativos
+- **RxJS** - Programação reativa
 
-```bash
-ng build
+### Principais bibliotecas
+- `@angular/core` - Core do Angular
+- `@angular/common` - Funcionalidades comuns
+- `@angular/forms` - Formulários
+- `@angular/router` - Roteamento
+- `primeng` - Componentes UI
+- `primeicons` - Ícones
+- `rxjs` - Programação reativa
+
+### Estrutura do projeto
+```
+src/
+├── app/
+│   ├── components/
+│   │   ├── dashboard/          # Dashboard principal
+│   │   └── task-form/          # Formulário de tarefas
+│   ├── models/                 # Modelos de dados
+│   ├── services/               # Serviços (API, Auth, etc.)
+│   ├── app.config.ts          # Configuração da aplicação
+│   ├── app.routes.ts          # Rotas
+│   └── app.html               # Template principal
+├── styles.css                 # Estilos globais
+└── index.html                 # HTML principal
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 🧪 Como executar os testes
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
+### Testes unitários
 ```bash
+# Usando npm
+npm test
+
+# Ou usando pnpm
+pnpm test
+
+# Ou usando Angular CLI
 ng test
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
+### Testes end-to-end
 ```bash
+# Usando npm
+npm run e2e
+
+# Ou usando pnpm
+pnpm e2e
+
+# Ou usando Angular CLI
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Executar testes em modo watch
+```bash
+ng test --watch
+```
 
-## Additional Resources
+### Executar testes com cobertura
+```bash
+ng test --code-coverage
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 📦 Scripts disponíveis
+
+```bash
+# Desenvolvimento
+npm start          # Inicia o servidor de desenvolvimento
+npm run build      # Compila para produção
+npm run build:dev  # Compila para desenvolvimento
+
+# Testes
+npm test           # Executa testes unitários
+npm run e2e        # Executa testes e2e
+
+# Linting
+npm run lint       # Executa o linter
+npm run lint:fix   # Corrige problemas de lint automaticamente
+```
+
+## 🔧 Configuração
+
+### Variáveis de ambiente
+Crie um arquivo `.env` na raiz do projeto:
+```env
+API_BASE_URL=http://localhost:8080
+```
+
+### Configuração da API
+O serviço de API está configurado para se conectar ao backend em:
+```
+http://localhost:8080
+```
+
+## 📱 Funcionalidades
+
+- ✅ **Autenticação** - Login e logout
+- ✅ **Dashboard** - Visão geral das tarefas
+- ✅ **CRUD de Tarefas** - Criar, ler, atualizar e deletar
+- ✅ **Paginação** - Paginação server-side
+- ✅ **Filtros** - Filtrar por nome, prioridade e situação
+- ✅ **Ordenação** - Ordenar por diferentes campos
+- ✅ **Estatísticas** - Contadores de tarefas por status
+- ✅ **Interface Responsiva** - Adaptável a diferentes telas
+
+## 🎨 Interface
+
+- **Design moderno** com PrimeNG
+- **Tema responsivo** para mobile e desktop
+- **Componentes reutilizáveis**
+- **Feedback visual** com toasts e confirmações
+- **Loading states** para melhor UX
+
+## 🔐 Autenticação
+
+O sistema utiliza autenticação básica:
+- **Login**: Usuário e senha
+- **Sessão**: Mantida durante a navegação
+- **Proteção de rotas**: AuthGuard implementado
+
+## 📊 Paginação
+
+- **Server-side pagination** para melhor performance
+- **Tamanhos de página**: 5, 10, 20 itens
+- **Navegação**: Primeiro, anterior, próximo, último
+- **Informações**: Mostra registros atuais e total
+
+## 🚀 Deploy
+
+### Build para produção
+```bash
+ng build --configuration production
+```
+
+### Arquivos gerados
+Os arquivos compilados ficam na pasta `dist/` e podem ser servidos por qualquer servidor web.
+
+## 🤝 Contribuição
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+## 📞 Suporte
+
+Para suporte, entre em contato através de:
+- **Email**: [seu-email@exemplo.com]
+- **Issues**: [GitHub Issues]
+
+---
+
+Desenvolvido com ❤️ usando Angular e PrimeNG

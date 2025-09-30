@@ -1,0 +1,279 @@
+<div class="dashboard-container">
+  <div class="container">
+    <!-- Header -->
+
+    <div class="hd-container">
+      <p-toolbar>
+        <ng-template pTemplate="left">
+          <div class="flex items-center gap-3 p-4">
+            <i class="pi pi-check-circle text-2xl text-blue-600"></i>
+            <span class="text-xl font-semibold text-gray-900">TodoList</span>
+          </div>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+          <div class="flex gap-4 p-4">
+            <p-button
+              label="Nova Tarefa"
+              icon="pi pi-plus"
+              class="flex items-center justify-center"
+              (onClick)="showTaskFormModal()"
+              styleClass="p-button-primary">
+            </p-button>
+            <p-button
+              label="Atualizar"
+              icon="pi pi-refresh"
+              styleClass="p-button-outlined"
+              (onClick)="forceReload()"
+              [loading]="loading">
+            </p-button>
+            <p-button
+              label="Sair"
+              icon="pi pi-sign-out"
+              styleClass="p-button-outlined"
+              (onClick)="logout()">
+            </p-button>
+          </div>
+        </ng-template>
+      </p-toolbar>
+    </div>
+
+    <div class="flex justify-between mb-6">
+      <div class="col-6 lg:col-3">
+        <p-card>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-3xl font-bold text-gray-900">{{ totalElements }}</div>
+              <div class="text-sm text-gray-500">Total de Tarefas</div>
+            </div>
+            <i class="pi pi-list text-3xl text-blue-600"></i>
+          </div>
+        </p-card>
+      </div>
+
+      <div class="col-6 lg:col-3">
+        <p-card>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-3xl font-bold text-green-600">{{ completedTasks }}</div>
+              <div class="text-sm text-gray-500">Concluídas</div>
+            </div>
+            <i class="pi pi-check-circle text-3xl text-green-600"></i>
+          </div>
+        </p-card>
+      </div>
+
+      <div class="col-6 lg:col-3">
+        <p-card>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-3xl font-bold text-orange-600">{{ pendingTasks }}</div>
+              <div class="text-sm text-gray-500">Pendentes</div>
+            </div>
+            <i class="pi pi-clock text-3xl text-orange-600"></i>
+          </div>
+        </p-card>
+      </div>
+
+      <div class="col-6 lg:col-3">
+        <p-card>
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-3xl font-bold text-blue-600">{{ openTasks }}</div>
+              <div class="text-sm text-gray-500">Abertas</div>
+            </div>
+            <i class="pi pi-circle text-3xl text-blue-600"></i>
+          </div>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <p-card class="mb-6">
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-filter text-lg text-gray-600"></i>
+          <span class="text-lg font-semibold text-gray-900">Filtros</span>
+        </div>
+      </ng-template>
+
+      <div class="grid">
+        <div class="col-12 md:col-4">
+          <div class="field">
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+            <input
+              pInputText
+              id="name"
+              [(ngModel)]="filter.name"
+              (ngModelChange)="onFilterChange()"
+              placeholder="Filtrar por nome"
+              class="w-full">
+          </div>
+        </div>
+
+        <div class="col-12 md:col-4">
+          <div class="field">
+            <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">Prioridade</label>
+            <p-select
+              id="priority"
+              [(ngModel)]="filter.priority"
+              (onChange)="onFilterChange()"
+              [options]="priorities"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Selecione a prioridade"
+              class="w-full">
+            </p-select>
+          </div>
+        </div>
+
+        <div class="col-12 md:col-4">
+          <div class="field">
+            <label for="situation" class="block text-sm font-medium text-gray-700 mb-1">Situação</label>
+            <p-select
+              id="situation"
+              [(ngModel)]="filter.situation"
+              (onChange)="onFilterChange()"
+              [options]="situations"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Selecione a situação"
+              class="w-full">
+            </p-select>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <!-- Tabela de Tarefas -->
+    <p-card>
+      <ng-template pTemplate="header">
+        <div class="flex items-center gap-2">
+          <i class="pi pi-table text-lg text-gray-600"></i>
+          <span class="text-lg font-semibold text-gray-900">Tarefas</span>
+        </div>
+      </ng-template>
+
+    <p-table
+      [value]="tasks"
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="pageSize"
+      [totalRecords]="totalElements"
+      [lazy]="true"
+      (onLazyLoad)="onLazyLoad($event)"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} tarefas"
+      [rowsPerPageOptions]="[5, 10, 20]"
+      [first]="currentPage * pageSize">
+
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="name">Nome <p-sortIcon field="name"></p-sortIcon></th>
+          <th>Descrição</th>
+          <th pSortableColumn="priority">Prioridade <p-sortIcon field="priority"></p-sortIcon></th>
+          <th pSortableColumn="situation">Situação <p-sortIcon field="situation"></p-sortIcon></th>
+          <th pSortableColumn="expectedCompletionDate">Data Prevista <p-sortIcon field="expectedCompletionDate"></p-sortIcon></th>
+          <th>Ações</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-task>
+        <tr>
+          <td>
+            <div class="flex items-center gap-2">
+              <i class="pi pi-circle-fill text-xs"
+                 [ngClass]="{
+                   'text-green-600': (task.priority || task.prioridade) === 'BAIXA',
+                   'text-orange-600': (task.priority || task.prioridade) === 'MEDIA',
+                   'text-red-600': (task.priority || task.prioridade) === 'ALTA'
+                 }"></i>
+              <span class="font-medium">{{ task.name || task.nome }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="text-gray-600">{{ (task.description || task.descricao) || '-' }}</span>
+          </td>
+          <td>
+            <p-tag
+              [value]="task.priority || task.prioridade"
+              [severity]="getPrioritySeverity(task.priority || task.prioridade)">
+            </p-tag>
+          </td>
+          <td>
+            <p-tag
+              [value]="task.situation || task.situacao"
+              [severity]="getSituationSeverity(task.situation || task.situacao)">
+            </p-tag>
+          </td>
+          <td>
+            <span class="text-gray-700">{{ (task.expectedCompletionDate || task.dataPrevistaConclusao) | date:'dd/MM/yyyy' }}</span>
+          </td>
+          <td>
+            <div class="flex gap-1">
+              <p-button
+                icon="pi pi-check"
+                size="small"
+                severity="success"
+                [disabled]="(task.situation || task.situacao) === 'CONCLUIDA'"
+                (onClick)="markAsComplete(task)"
+                pTooltip="Marcar como concluída">
+              </p-button>
+
+              <p-button
+                icon="pi pi-clock"
+                size="small"
+                severity="warn"
+                [disabled]="(task.situation || task.situacao) === 'PENDENTE'"
+                (onClick)="markAsPending(task)"
+                pTooltip="Marcar como pendente">
+              </p-button>
+
+              <p-button
+                icon="pi pi-pencil"
+                size="small"
+                severity="info"
+                (onClick)="showTaskFormModal(task)"
+                pTooltip="Editar">
+              </p-button>
+
+              <p-button
+                icon="pi pi-trash"
+                size="small"
+                severity="danger"
+                (onClick)="deleteTask(task)"
+                pTooltip="Excluir">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" class="text-center">
+            <div class="flex flex-col items-center py-8">
+              <i class="pi pi-inbox text-4xl text-gray-400 mb-3"></i>
+              <span class="text-gray-500">Nenhuma tarefa encontrada</span>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+    </p-card>
+
+    <!-- Modal de Formulário -->
+    <app-task-form
+      [task]="selectedTask"
+      [visible]="showTaskForm"
+      (visibleChange)="showTaskForm = $event"
+      (taskSaved)="onTaskSaved()">
+    </app-task-form>
+
+    <!-- Toast para mensagens -->
+    <p-toast></p-toast>
+
+    <!-- Dialog de confirmação -->
+    <p-confirmDialog></p-confirmDialog>
+  </div>
+</div>

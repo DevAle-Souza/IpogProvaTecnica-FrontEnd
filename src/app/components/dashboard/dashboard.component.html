@@ -281,10 +281,19 @@
       (taskSaved)="onTaskSaved()">
     </app-task-form>
 
-    <!-- Toast para mensagens -->
-    <p-toast></p-toast>
 
-    <!-- Dialog de confirmação -->
-    <p-confirmDialog></p-confirmDialog>
+    <!-- Dialog de confirmação customizado -->
+    <app-confirmation-dialog
+      [(visible)]="showConfirmationDialog"
+      [data]="confirmationData"
+      (confirm)="onConfirmDelete()"
+      (cancel)="onCancelDelete()">
+    </app-confirmation-dialog>
+
+    <!-- Toast customizado para mensagens -->
+    <app-custom-toast
+      [messages]="toastMessages"
+      (messageClose)="onToastClose($event)">
+    </app-custom-toast>
   </div>
 </div>

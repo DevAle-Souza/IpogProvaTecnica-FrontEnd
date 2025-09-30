@@ -1,0 +1,31 @@
+<div class="toast-container">
+  <div
+    *ngFor="let message of messages; trackBy: trackByMessageId"
+    class="toast-message"
+    [ngClass]="getSeverityClass(message.severity)"
+    [@slideInOut]>
+
+    <div class="toast-content">
+      <div class="toast-icon">
+        <i [class]="getIconClass(message.severity)"></i>
+      </div>
+
+      <div class="toast-text">
+        <div class="toast-summary">{{ message.summary }}</div>
+        <div class="toast-detail">{{ message.detail }}</div>
+      </div>
+
+      <button
+        type="button"
+        class="toast-close"
+        (click)="closeMessage(message.id!)"
+        [attr.aria-label]="'Fechar notificação'">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+
+    <div class="toast-progress" *ngIf="message.life && message.life > 0">
+      <div class="toast-progress-bar" [style.animation-duration]="message.life + 'ms'"></div>
+    </div>
+  </div>
+</div>

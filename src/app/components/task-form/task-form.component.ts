@@ -3,13 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
 import { Task, Priority, Situation } from '../../models/task.model';
-import { MessageService } from 'primeng/api';
+import { ToastService } from '../../services/toast.service';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { TextareaModule } from 'primeng/textarea';
-import { SelectModule } from 'primeng/select';
-import { DatePickerModule } from 'primeng/datepicker';
 import { CustomDropdownComponent, DropdownOption } from '../custom-dropdown/custom-dropdown';
 import { CustomDatepickerComponent } from '../custom-datepicker/custom-datepicker';
 
@@ -22,9 +19,6 @@ import { CustomDatepickerComponent } from '../custom-datepicker/custom-datepicke
     ButtonModule,
     DialogModule,
     InputTextModule,
-    TextareaModule,
-    SelectModule,
-    DatePickerModule,
     CustomDropdownComponent,
     CustomDatepickerComponent
   ],
@@ -57,7 +51,7 @@ export class TaskFormComponent implements OnInit, OnChanges {
   constructor(
     private fb: FormBuilder,
     private taskService: TaskService,
-    private messageService: MessageService
+    private toastService: ToastService
   ) {
     this.taskForm = this.fb.group({
       name: ['', [Validators.required, Validators.maxLength(100)]],
@@ -125,44 +119,27 @@ export class TaskFormComponent implements OnInit, OnChanges {
         this.taskService.updateTask(this.task.id, taskData).subscribe({
           next: () => {
             this.loading = false;
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Tarefa atualizada com sucesso!'
-            });
+            this.toastService.success('Sucesso', 'Tarefa atualizada com sucesso!');
             this.taskSaved.emit();
             this.closeDialog();
           },
           error: (error) => {
             this.loading = false;
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erro',
-              detail: 'Erro ao atualizar tarefa: ' + (error.error?.message || error.message)
-            });
+            this.toastService.error('Erro', 'Erro ao atualizar tarefa: ' + (error.error?.message || error.message));
           }
         });
       } else {
         this.taskService.createTask(taskData).subscribe({
           next: (response) => {
-            console.log('Task created successfully:', response);
             this.loading = false;
-            this.messageService.add({
-              severity: 'success',
-              summary: 'Sucesso',
-              detail: 'Tarefa criada com sucesso!'
-            });
+            this.toastService.success('Sucesso', 'Tarefa criada com sucesso!');
             this.taskForm.reset();
             this.taskSaved.emit();
             this.closeDialog();
           },
           error: (error) => {
             this.loading = false;
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Erro',
-              detail: 'Erro ao criar tarefa: ' + (error.error?.message || error.message)
-            });
+            this.toastService.error('Erro', 'Erro ao criar tarefa: ' + (error.error?.message || error.message));
           }
         });
       }

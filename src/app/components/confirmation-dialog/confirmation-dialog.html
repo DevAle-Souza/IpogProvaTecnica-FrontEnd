@@ -1,0 +1,46 @@
+<div
+  *ngIf="visible"
+  class="confirmation-overlay"
+  (click)="onBackdropClick($event)"
+  (keydown)="onKeyDown($event)"
+  tabindex="0">
+
+  <div class="confirmation-dialog" [class]="data.type">
+    <!-- Header -->
+    <div class="dialog-header" [class]="headerClass">
+      <div class="header-content">
+        <i [class]="iconClass"></i>
+        <h3 class="dialog-title">{{ data.title }}</h3>
+      </div>
+      <button
+        type="button"
+        class="close-button"
+        (click)="onCancel()"
+        aria-label="Fechar">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+
+    <!-- Content -->
+    <div class="dialog-content">
+      <p class="dialog-message">{{ data.message }}</p>
+    </div>
+
+    <!-- Footer -->
+    <div class="dialog-footer">
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="onCancel()">
+        {{ data.cancelText || 'Cancelar' }}
+      </button>
+      <button
+        type="button"
+        class="confirm-button"
+        [class]="confirmButtonClass"
+        (click)="onConfirm()">
+        {{ data.confirmText || 'Confirmar' }}
+      </button>
+    </div>
+  </div>
+</div>

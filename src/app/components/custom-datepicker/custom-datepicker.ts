@@ -31,7 +31,6 @@ export class CustomDatepickerComponent implements ControlValueAccessor {
   displayValue: string = '';
   private _value: Date | null = null;
 
-  // Calendar state
   currentMonth: number = new Date().getMonth();
   currentYear: number = new Date().getFullYear();
   calendarDays: Date[] = [];

@@ -38,12 +38,8 @@ export class TaskService {
       params.situation = filters.situation;
     }
 
-    console.log('TaskService.getTasks called with params:', params);
-    console.log('Full URL will be:', `${this.basePath}?${new URLSearchParams(params).toString()}`);
-
     return this.apiService.get<any>(this.basePath, params).pipe(
       map(response => {
-        console.log('TaskService.getTasks response:', response);
         return {
           ...response,
           content: this.taskMapper.mapArrayFromBackend(response.content)

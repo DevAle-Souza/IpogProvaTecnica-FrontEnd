@@ -111,10 +111,8 @@ export class CustomPaginationComponent {
   }
 
   onRowsPerPageChange(newRows: number): void {
-    if (newRows !== this.rows) {
-      this.rows = newRows;
-      this.changePage(0); // Reset to first page when changing rows per page
-    }
+    this.rows = newRows;
+    this.changePage(0);
   }
 
   private changePage(page: number): void {

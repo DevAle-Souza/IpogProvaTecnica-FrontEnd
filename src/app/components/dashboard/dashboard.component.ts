@@ -1,25 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { TaskService } from '../../services/task.service';
 import { Task, TaskFilter, Priority, Situation } from '../../models/task.model';
-import { MessageService, ConfirmationService } from 'primeng/api';
+import { ToastService, ToastMessage } from '../../services/toast.service';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
 import { ToolbarModule } from 'primeng/toolbar';
-import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TooltipModule } from 'primeng/tooltip';
-import { PaginatorModule } from 'primeng/paginator';
 import { FormsModule } from '@angular/forms';
 import { TaskFormComponent } from '../task-form/task-form.component';
 import { CustomDropdownComponent, DropdownOption } from '../custom-dropdown/custom-dropdown';
 import { CustomPaginationComponent, PaginationEvent } from '../custom-pagination/custom-pagination';
+import { ConfirmationDialogComponent, ConfirmationDialogData } from '../confirmation-dialog/confirmation-dialog';
+import { CustomToastComponent } from '../custom-toast/custom-toast';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -31,28 +30,25 @@ import { CustomPaginationComponent, PaginationEvent } from '../custom-pagination
     CardModule,
     TableModule,
     InputTextModule,
-    SelectModule,
     TagModule,
     ToolbarModule,
-    ToastModule,
-    ConfirmDialogModule,
     TooltipModule,
-    PaginatorModule,
     TaskFormComponent,
     CustomDropdownComponent,
-    CustomPaginationComponent
+    CustomPaginationComponent,
+    ConfirmationDialogComponent,
+    CustomToastComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   tasks: Task[] = [];
   loading = false;
   totalElements = 0;
   currentPage = 0;
   pageSize = 10;
 
-  totalTasks = 0;
   completedTasks = 0;
   pendingTasks = 0;
   openTasks = 0;
@@ -83,16 +79,34 @@ export class DashboardComponent implements OnInit {
   showTaskForm = false;
   selectedTask: Task | undefined;
 
+  showConfirmationDialog = false;
+  confirmationData: ConfirmationDialogData = {
+    title: 'Confirmar Exclusão',
+    message: '',
+    confirmText: 'Sim, Excluir',
+    cancelText: 'Cancelar',
+    type: 'danger'
+  };
+  taskToDelete: Task | undefined;
+  toastMessages: ToastMessage[] = [];
+  private toastSubscription: Subscription = new Subscription();
+
   constructor(
     private taskService: TaskService,
     private authService: AuthService,
     private router: Router,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
+    this.toastSubscription = this.toastService.messages$.subscribe(
+      messages => this.toastMessages = messages
+    );
     this.loadTasks();
+  }
+
+  ngOnDestroy(): void {
+    this.toastSubscription.unsubscribe();
   }
 
   loadTasks(): void {
@@ -113,18 +127,13 @@ export class DashboardComponent implements OnInit {
         this.loading = false;
       },
       error: (error) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Erro',
-          detail: 'Erro ao carregar tarefas: ' + (error.error?.message || error.message)
-        });
+        this.toastService.error('Erro', 'Erro ao carregar tarefas: ' + (error.error?.message || error.message));
         this.loading = false;
       }
     });
   }
 
   updateStatistics(): void {
-    this.totalTasks = this.tasks.length;
     this.completedTasks = this.tasks.filter(t => (t.situation || t.situacao) === Situation.CONCLUIDA).length;
     this.pendingTasks = this.tasks.filter(t => (t.situation || t.situacao) === Situation.PENDENTE).length;
     this.openTasks = this.tasks.filter(t => (t.situation || t.situacao) === Situation.ABERTA).length;
@@ -175,19 +184,11 @@ export class DashboardComponent implements OnInit {
     if (task.id) {
       this.taskService.markAsComplete(task.id).subscribe({
         next: (response) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Tarefa marcada como concluída!'
-          });
+          this.toastService.success('Sucesso', 'Tarefa marcada como concluída!');
           this.reloadTasks();
         },
         error: (error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erro',
-            detail: 'Erro: ' + (error.error?.message || error.message)
-          });
+          this.toastService.error('Erro', 'Erro: ' + (error.error?.message || error.message));
         }
       });
     }
@@ -195,68 +196,48 @@ export class DashboardComponent implements OnInit {
 
   markAsPending(task: Task): void {
     if (task.id) {
-      console.log('Marking task as pending:', task.id);
       this.taskService.markAsPending(task.id).subscribe({
         next: (response) => {
-          console.log('Task marked as pending successfully:', response);
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Sucesso',
-            detail: 'Tarefa marcada como pendente!'
-          });
-          this.reloadTasks(); // Recarrega a lista automaticamente
+          this.toastService.success('Sucesso', 'Tarefa marcada como pendente!');
+          this.reloadTasks();
         },
         error: (error) => {
-          console.error('Error marking task as pending:', error);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Erro',
-            detail: 'Erro: ' + (error.error?.message || error.message)
-          });
+          this.toastService.error('Erro', 'Erro: ' + (error.error?.message || error.message));
         }
       });
     }
   }
 
   deleteTask(task: Task): void {
-    console.log('deleteTask called for task:', task);
     if (task.id) {
-      console.log('Opening confirmation dialog...');
-      this.confirmationService.confirm({
+      this.taskToDelete = task;
+      this.confirmationData = {
+        title: 'Confirmar Exclusão',
         message: `Tem certeza que deseja excluir a tarefa "${task.name || task.nome}"? Esta ação não pode ser desfeita.`,
-        header: 'Confirmar Exclusão',
-        icon: 'pi pi-exclamation-triangle',
-        acceptLabel: 'Sim, Excluir',
-        rejectLabel: 'Cancelar',
-        acceptButtonStyleClass: 'p-button-danger',
-        rejectButtonStyleClass: 'p-button-outlined',
-        accept: () => {
-          console.log('Deleting task:', task.id);
-          this.taskService.deleteTask(task.id!).subscribe({
-            next: () => {
-              console.log('Task deleted successfully');
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Sucesso',
-                detail: 'Tarefa excluída com sucesso!'
-              });
-              this.reloadTasks(); // Recarrega a lista automaticamente
-            },
-            error: (error) => {
-              console.error('Error deleting task:', error);
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Erro',
-                detail: 'Erro ao excluir tarefa: ' + (error.error?.message || error.message)
-              });
-            }
-          });
+        confirmText: 'Sim, Excluir',
+        cancelText: 'Cancelar',
+        type: 'danger'
+      };
+      this.showConfirmationDialog = true;
+    }
+  }
+
+  onConfirmDelete(): void {
+    if (this.taskToDelete?.id) {
+      this.taskService.deleteTask(this.taskToDelete.id).subscribe({
+        next: () => {
+          this.toastService.success('Sucesso', 'Tarefa excluída com sucesso!');
+          this.reloadTasks();
         },
-        reject: () => {
-          console.log('Task deletion cancelled');
+        error: (error) => {
+          this.toastService.error('Erro', 'Erro ao excluir tarefa: ' + (error.error?.message || error.message));
         }
       });
     }
+  }
+
+  onCancelDelete(): void {
+    this.taskToDelete = undefined;
   }
 
   showTaskFormModal(task?: Task): void {
@@ -265,29 +246,17 @@ export class DashboardComponent implements OnInit {
   }
 
   onTaskSaved(): void {
-    console.log('Task saved, reloading tasks...');
     this.showTaskForm = false;
     this.selectedTask = undefined;
     this.reloadTasks();
   }
 
-  /**
-   * Método utilitário para recarregar a lista de tarefas
-   * Garante que a lista seja sempre atualizada após qualquer ação
-   */
   private reloadTasks(): void {
-    console.log('Reloading tasks after action...');
-    // Força o recarregamento resetando o estado
     this.currentPage = 0;
     this.loadTasks();
   }
 
-  /**
-   * Força o recarregamento completo da lista
-   * Útil quando há problemas de sincronização
-   */
   forceReload(): void {
-    console.log('Force reloading tasks...');
     this.tasks = [];
     this.totalElements = 0;
     this.currentPage = 0;
@@ -297,5 +266,9 @@ export class DashboardComponent implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  onToastClose(messageId: string): void {
+    this.toastService.close(messageId);
   }
 }

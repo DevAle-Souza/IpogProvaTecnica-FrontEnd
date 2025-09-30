@@ -203,16 +203,5 @@ Os arquivos compilados ficam na pasta `dist/` e podem ser servidos por qualquer 
 4. Push para a branch (`git push origin feature/AmazingFeature`)
 5. Abra um Pull Request
 
-## 📝 Licença
 
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-## 📞 Suporte
-
-Para suporte, entre em contato através de:
-- **Email**: [seu-email@exemplo.com]
-- **Issues**: [GitHub Issues]
-
----
-
-Desenvolvido com ❤️ usando Angular e PrimeNG

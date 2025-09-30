@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TaskService } from '../../services/task.service';
@@ -27,7 +27,7 @@ import { DatePickerModule } from 'primeng/datepicker';
   templateUrl: './task-form.component.html',
   styleUrls: ['./task-form.component.css']
 })
-export class TaskFormComponent implements OnInit {
+export class TaskFormComponent implements OnInit, OnChanges {
   @Input() task?: Task;
   @Input() visible = false;
   @Output() visibleChange = new EventEmitter<boolean>();
@@ -65,6 +65,16 @@ export class TaskFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.updateForm();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['task'] || changes['visible']) {
+      this.updateForm();
+    }
+  }
+
+  private updateForm(): void {
     if (this.task) {
       this.isEditMode = true;
       this.taskForm.patchValue({
@@ -73,6 +83,15 @@ export class TaskFormComponent implements OnInit {
         priority: this.task.priority,
         situation: this.task.situation,
         expectedCompletionDate: this.task.expectedCompletionDate ? new Date(this.task.expectedCompletionDate) : null
+      });
+    } else {
+      this.isEditMode = false;
+      this.taskForm.reset({
+        name: '',
+        description: '',
+        priority: Priority.BAIXA,
+        situation: Situation.ABERTA,
+        expectedCompletionDate: null
       });
     }
   }
